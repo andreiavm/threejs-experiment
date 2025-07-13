@@ -20,10 +20,10 @@ export default function Scene3D() {
       const time = state.clock.elapsedTime
       
       // Main horizontal rotation (like dragging from left to right) - slower speed
-      orbitControlsRef.current.setAzimuthalAngle(time * 0.05)
+      orbitControlsRef.current.setAzimuthalAngle(time * 0.03)
       
       // Add subtle vertical movement (like slight vertical mouse movement) - slower
-      const verticalOffset = Math.sin(time * 0.05) * 0.1
+      const verticalOffset = Math.sin(time * 0.04) * 0.08
       orbitControlsRef.current.setPolarAngle(Math.PI / 2 + verticalOffset)
       
       // Update the controls

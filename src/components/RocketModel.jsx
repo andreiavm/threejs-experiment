@@ -117,25 +117,30 @@ export function RocketModel({ position = [0, 0, 0], scale = [1, 1, 1], rotation 
     }
   }, [fbx])
 
-  // Gentle floating motion like objects drifting through space
+  // Aggressive floating motion constrained to viewport bounds
   useFrame((state) => {
     if (rocketRef.current) {
       const time = state.clock.elapsedTime + timeDelay // Add delay offset
       
-      // Subtle drift motion - smaller ranges for gentle floating
-      const driftX = Math.sin(time * 0.1) * 1.5 
-      const driftY = Math.cos(time * 0.08) * 1 
-      const driftZ = Math.sin(time * 0.06) * 1.2 
+      // Constrained aggressive drift motion - smaller ranges but faster speeds
+      const driftX = Math.sin(time * 0.3) * 1.8 + Math.cos(time * 0.25) * 0.8
+      const driftY = Math.cos(time * 0.28) * 1.2 + Math.sin(time * 0.22) * 0.6
+      const driftZ = Math.sin(time * 0.26) * 1.5 + Math.cos(time * 0.24) * 0.7
       
-      // Apply gentle floating position
-      rocketRef.current.position.x = position[0] + driftX
-      rocketRef.current.position.y = position[1] + driftY
-      rocketRef.current.position.z = position[2] + driftZ
+      // Apply constrained floating position with boundary checks
+      const newX = position[0] + driftX
+      const newY = position[1] + driftY
+      const newZ = position[2] + driftZ
       
-      // Very subtle rotation for natural floating feel
-      rocketRef.current.rotation.x = time * rotationSpeeds.current.x + Math.sin(time * rotationSpeeds.current.xFreq) * 0.15
-      rocketRef.current.rotation.y = time * rotationSpeeds.current.y + Math.cos(time * rotationSpeeds.current.yFreq) * 0.2
-      rocketRef.current.rotation.z = time * rotationSpeeds.current.z + Math.sin(time * rotationSpeeds.current.zFreq) * 0.1
+      // Keep rockets within reasonable bounds relative to camera
+      rocketRef.current.position.x = Math.max(-15, Math.min(15, newX))
+      rocketRef.current.position.y = Math.max(-8, Math.min(8, newY))
+      rocketRef.current.position.z = Math.max(-10, Math.min(10, newZ))
+      
+      // More noticeable rotation for dynamic floating feel
+      rocketRef.current.rotation.x = time * rotationSpeeds.current.x + Math.sin(time * rotationSpeeds.current.xFreq) * 0.4
+      rocketRef.current.rotation.y = time * rotationSpeeds.current.y + Math.cos(time * rotationSpeeds.current.yFreq) * 0.5
+      rocketRef.current.rotation.z = time * rotationSpeeds.current.z + Math.sin(time * rotationSpeeds.current.zFreq) * 0.3
     }
   })
 
